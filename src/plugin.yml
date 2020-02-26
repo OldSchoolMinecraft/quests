@@ -2,4 +2,9 @@ name: OSMQuests
 version: 1.0.0
 description: OSM Quests
 author: sho
-main: dev.shog.osm.quests.Quests
+main: dev.shog.osm.quest.Quests
+commands:
+  xp:
+    description: Pog
+  quests:
+    description: POg

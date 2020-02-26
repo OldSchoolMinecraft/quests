@@ -1,5 +1,6 @@
 {
   "quests": {
-    "item-complete": "§eYou have completed §6{0}§e, and have been rewarded with {1}§e!"
+    "item-complete": "§eYou have completed §6{0}§e, and have been rewarded with {1}§e!",
+    "balanace-complete": "§eYou have completed §6{0}§e, and have been rewarded with §6${1}§e!"
   }
 }
