@@ -2,9 +2,9 @@ name: OSMQuests
 version: 1.0.0
 description: OSM Quests
 author: sho
-main: dev.shog.osm.quest.Quests
+main: dev.shog.osm.quest.OsmQuests
 commands:
   xp:
-    description: Pog
+    description: View your XP.
   quests:
-    description: POg
+    description: View your complete and uncomplete quests.

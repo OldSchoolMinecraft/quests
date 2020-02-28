@@ -1,0 +1,21 @@
+{
+    "quests": {
+        "task-complete": "§7You have completed the task §8{0} §7for the quest §8{1}§7!",
+        "quest-complete": "§7You have been the quest §8{0}§7, and have been rewarded §8{1}§7!"
+    },
+    "commands": {
+        "view-quest": {
+            "header": "§7Quests for §8{0}§7:",
+            "uncomplete-quest": "§c{0}§7: §8{1}{2}",
+            "complete-quest": "§a{0}§7: §8{1}{2}", 
+            "complete-task": "\n§a{0}§7: {1}",
+            "uncomplete-task": "\n§c{0}§7: {1}",
+            "status": {
+                "block-place": "§8{0}§7/§8{1} {2} §7blocks placed",
+                "wolf-tame": "§8{0}§7/§8{1} §7wolfs tamed",
+                "block-break": "§8{0}§7/§8{1} {2} §7blocks broken",
+                "move": "§8{0}§7/§8{1} §7blocks traversed"
+            }
+        }
+    }
+}

@@ -2,13 +2,19 @@ package dev.shog.osm.quest.handle
 
 import org.json.JSONObject
 
+/**
+ * The message handler.
+ */
 object MessageHandler {
     private val data: JSONObject by lazy {
-        val reader = MessageHandler::class.java.getResourceAsStream("/messages.yml")
+        val reader = MessageHandler::class.java.getResourceAsStream("/messages.json")
 
         JSONObject(String(reader.readBytes()))
     }
 
+    /**
+     * Get a message. This uses "object.object.string"
+     */
     fun getMessage(message: String): String {
         val split = message.split(".").toMutableList()
         val msg = split.last()
@@ -22,12 +28,15 @@ object MessageHandler {
         return pointer.getString(msg)
     }
 
-    fun getMessage(message: String, vararg args: String?): String {
+    /**
+     * Get a message and input arguments into it.
+     */
+    fun getMessage(message: String, vararg args: Any?): String {
         var newString = getMessage(message)
 
         args.forEachIndexed { i, arg ->
             if (newString.contains("{$i}"))
-                newString = newString.replace("{$i}", arg ?: "null")
+                newString = newString.replace("{$i}", arg?.toString() ?: "null")
         }
 
         return newString

@@ -7,14 +7,16 @@ import dev.shog.osm.quest.handle.quests.Quest
 import dev.shog.osm.quest.handle.quests.task.QuestTask
 import org.bukkit.Material
 import org.bukkit.entity.Player
+import org.bukkit.entity.Wolf
 import org.bukkit.event.Event
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.block.BlockListener
+import org.bukkit.event.entity.EntityListener
+import org.bukkit.event.entity.EntityTameEvent
 import org.json.JSONArray
 import org.json.JSONObject
 
-class BlockBreakTask(
-    val material: Material,
+class WolfTameTask(
     val amount: Int,
     osmQuests: OsmQuests,
     name: String,
@@ -23,33 +25,37 @@ class BlockBreakTask(
     private val status: HashMap<String, Int>
 
     init {
-        status = if (!data.isEmpty && data.has("complete") && data.has("status")) {
-            val complete = data.getJSONArray("complete")
-
+        status = if (!data.isEmpty && data.has("status")) {
+            val status = data.getJSONObject("status")
             val mapper = ObjectMapper()
 
             mapper.readValue(
-                complete.toString(),
+                status.toString(),
                 mapper.typeFactory.constructMapType(HashMap::class.java, String::class.java, Int::class.java)
             )
         } else hashMapOf()
 
-        osmQuests.server.pluginManager.registerEvent(Event.Type.BLOCK_BREAK,  object : BlockListener() {
-            override fun onBlockBreak(event: BlockBreakEvent?) {
-                if (event != null && event.block.type == material && !isComplete(event.player)) {
-                    val current = status[event.player.name.toLowerCase()] ?: 0
+        osmQuests.server.pluginManager.registerEvent(Event.Type.ENTITY_TAME, object : EntityListener() {
+            override fun onEntityTame(event: EntityTameEvent?) {
+                if (event != null) {
+                    val player = event.owner as Player
 
-                    status[event.player.name.toLowerCase()] = current + 1
+                    if (event.entity is Wolf && !isComplete(player)) {
+                        val current = status[player.name.toLowerCase()] ?: 0
 
-                    if (isComplete(event.player)) {
-                        onPlayerComplete.invoke(osmQuests, event.player)
+                        status[player.name.toLowerCase()] = current + 1
+
+                        if (isComplete(player)) {
+                            onPlayerComplete.invoke(osmQuests, player)
+                        }
                     }
                 }
             }
         }, Event.Priority.Low, osmQuests)
+
     }
 
-    override val identifier: String = "BLOCK_BREAK"
+    override val identifier: String = "WOLF_TAME"
 
     override fun isComplete(player: Player): Boolean {
         val current = status[player.name.toLowerCase()] ?: 0
@@ -69,9 +75,10 @@ class BlockBreakTask(
         return obj
     }
 
+
     override fun getStatusForPlayer(player: Player): String {
         val status = status[player.name.toLowerCase()] ?: 0
 
-        return MessageHandler.getMessage("commands.view-quest.status.block-break", status, amount, material.toString())
+        return MessageHandler.getMessage("commands.view-quest.status.wolf-tame", status, amount)
     }
 }
