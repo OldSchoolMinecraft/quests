@@ -16,6 +16,10 @@ import org.bukkit.event.player.PlayerMoveEvent
 import org.json.JSONArray
 import org.json.JSONObject
 
+/**
+ * A move task.
+ * You must walk [distance] blocks.
+ */
 class MoveTask(
     val distance: Long,
     osmQuests: OsmQuests,
@@ -23,6 +27,7 @@ class MoveTask(
     data: JSONObject
 ) : QuestTask(name, osmQuests, data) {
     private val status: HashMap<String, Double>
+    override val identifier: String = "MOVE"
 
     init {
         status = if (!data.isEmpty && data.has("status")) {
@@ -55,14 +60,18 @@ class MoveTask(
         }, Event.Priority.Low, osmQuests)
     }
 
-    override val identifier: String = "MOVE"
-
+    /**
+     * If [player] has completed this task.
+     */
     override fun isComplete(player: Player): Boolean {
         val current = status[player.name.toLowerCase()] ?: 0.0
 
         return current.toLong() >= distance
     }
 
+    /**
+     * The save data for the task.
+     */
     override fun getSaveData(quest: Quest): JSONObject {
         val mapper = ObjectMapper()
 
@@ -75,6 +84,9 @@ class MoveTask(
         return obj
     }
 
+    /**
+     * The player's status. "0/1 wood blocks placed" etc
+     */
     override fun getStatusForPlayer(player: Player): String {
         val status = status[player.name.toLowerCase()] ?: 0
 

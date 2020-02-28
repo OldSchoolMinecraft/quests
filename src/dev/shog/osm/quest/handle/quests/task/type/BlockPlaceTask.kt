@@ -14,6 +14,10 @@ import org.bukkit.event.block.BlockPlaceEvent
 import org.json.JSONArray
 import org.json.JSONObject
 
+/**
+ * A block place task.
+ * You must place a [material] block [amount] times.
+ */
 class BlockPlaceTask(
     val material: Material,
     val amount: Int,
@@ -22,6 +26,7 @@ class BlockPlaceTask(
     data: JSONObject
 ) : QuestTask(name, osmQuests, data) {
     private val status: HashMap<String, Int>
+    override val identifier: String = "BLOCK_PLACE"
 
     init {
         status = if (!data.isEmpty && data.has("status")) {
@@ -49,14 +54,18 @@ class BlockPlaceTask(
         }, Event.Priority.Low, osmQuests)
     }
 
-    override val identifier: String = "BLOCK_PLACE"
-
+    /**
+     * If [player] has completed this task.
+     */
     override fun isComplete(player: Player): Boolean {
         val current = status[player.name.toLowerCase()] ?: 0
 
         return current >= amount
     }
 
+    /**
+     * The save data for the task.
+     */
     override fun getSaveData(quest: Quest): JSONObject {
         val mapper = ObjectMapper()
 
@@ -69,6 +78,9 @@ class BlockPlaceTask(
         return obj
     }
 
+    /**
+     * The player's status. "0/1 wood blocks placed" etc
+     */
     override fun getStatusForPlayer(player: Player): String {
         val status = status[player.name.toLowerCase()] ?: 0
 

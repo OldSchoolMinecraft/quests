@@ -16,6 +16,10 @@ import org.bukkit.event.entity.EntityTameEvent
 import org.json.JSONArray
 import org.json.JSONObject
 
+/**
+ * A wolf tame task.
+ * You must tame a wolf [amount] times.
+ */
 class WolfTameTask(
     val amount: Int,
     osmQuests: OsmQuests,
@@ -23,6 +27,7 @@ class WolfTameTask(
     data: JSONObject
 ) : QuestTask(name, osmQuests, data) {
     private val status: HashMap<String, Int>
+    override val identifier: String = "WOLF_TAME"
 
     init {
         status = if (!data.isEmpty && data.has("status")) {
@@ -55,14 +60,18 @@ class WolfTameTask(
 
     }
 
-    override val identifier: String = "WOLF_TAME"
-
+    /**
+     * If [player] has completed this task.
+     */
     override fun isComplete(player: Player): Boolean {
         val current = status[player.name.toLowerCase()] ?: 0
 
         return current >= amount
     }
 
+    /**
+     * The save data for the task.
+     */
     override fun getSaveData(quest: Quest): JSONObject {
         val mapper = ObjectMapper()
 
@@ -75,7 +84,9 @@ class WolfTameTask(
         return obj
     }
 
-
+    /**
+     * The player's status. "0/1 wood blocks placed" etc
+     */
     override fun getStatusForPlayer(player: Player): String {
         val status = status[player.name.toLowerCase()] ?: 0
 

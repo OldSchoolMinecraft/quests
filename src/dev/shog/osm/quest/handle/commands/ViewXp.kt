@@ -4,6 +4,9 @@ import dev.shog.osm.quest.handle.XpHandler
 import org.bukkit.command.CommandExecutor
 import org.bukkit.entity.Player
 
+/**
+ * View your XP.
+ */
 val VIEW_XP = CommandExecutor { sender, cmd, label, args ->
     if (sender is Player) {
         sender.sendMessage("You currently have ${XpHandler.xp[sender.name.toLowerCase()]}")

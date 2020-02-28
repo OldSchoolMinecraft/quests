@@ -1,6 +1,5 @@
 package dev.shog.osm.quest.handle.quests
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import dev.shog.osm.quest.OsmQuests
 import dev.shog.osm.quest.handle.quests.task.QuestTask
 import dev.shog.osm.quest.handle.quests.task.type.BlockBreakTask

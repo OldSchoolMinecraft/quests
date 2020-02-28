@@ -13,6 +13,10 @@ import org.bukkit.event.block.BlockListener
 import org.json.JSONArray
 import org.json.JSONObject
 
+/**
+ * A block break task.
+ * You must break a [material] block [amount] times.
+ */
 class BlockBreakTask(
     val material: Material,
     val amount: Int,
@@ -21,6 +25,7 @@ class BlockBreakTask(
     data: JSONObject
 ) : QuestTask(name, osmQuests, data) {
     private val status: HashMap<String, Int>
+    override val identifier: String = "BLOCK_BREAK"
 
     init {
         status = if (!data.isEmpty && data.has("complete") && data.has("status")) {
@@ -49,14 +54,18 @@ class BlockBreakTask(
         }, Event.Priority.Low, osmQuests)
     }
 
-    override val identifier: String = "BLOCK_BREAK"
-
+    /**
+     * If [player] has completed this task.
+     */
     override fun isComplete(player: Player): Boolean {
         val current = status[player.name.toLowerCase()] ?: 0
 
         return current >= amount
     }
 
+    /**
+     * The save data for the task.
+     */
     override fun getSaveData(quest: Quest): JSONObject {
         val mapper = ObjectMapper()
 
@@ -69,6 +78,9 @@ class BlockBreakTask(
         return obj
     }
 
+    /**
+     * The player's status. "0/1 wood blocks placed" etc
+     */
     override fun getStatusForPlayer(player: Player): String {
         val status = status[player.name.toLowerCase()] ?: 0
 

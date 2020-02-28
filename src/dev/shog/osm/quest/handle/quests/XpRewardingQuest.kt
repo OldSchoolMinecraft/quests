@@ -1,10 +1,20 @@
 package dev.shog.osm.quest.handle.quests
 
 import dev.shog.osm.quest.OsmQuests
+import dev.shog.osm.quest.handle.MessageHandler
 import dev.shog.osm.quest.handle.XpHandler
 import dev.shog.osm.quest.handle.quests.task.QuestTask
 import org.bukkit.entity.Player
 
+/**
+ * A quest that rewards money.
+ *
+ * @param name The name of the quest.
+ * @param tasks The tasks you must complete to finish the quest.
+ * @param osmQuests The OSM quests instance.
+ * @param xpReward The XP reward the player is rewarded with when finishing.
+ * @param rewardString The reward string. This could be "25 experiences"
+ */
 class XpRewardingQuest(
     name: String,
     tasks: List<QuestTask>,
@@ -12,13 +22,14 @@ class XpRewardingQuest(
     val xpReward: Long,
     override val rewardString: String
 ) : Quest(name, tasks, osmQuests) {
+    /**
+     * On complete give [player] [xpReward] xp
+     */
     override fun onComplete(player: Player) {
         val current = XpHandler.xp[player.name.toLowerCase()] ?: 0
-
         XpHandler.xp[player.name.toLowerCase()] = current + xpReward
 
-        // TODO add to messages.yml
-        player.sendMessage("You have completed $questName quest and have retrieved $xpReward")
+        player.sendMessage(MessageHandler.getMessage("quests.quest-complete", questName, rewardString))
     }
 
     override val identifier: String = "REWARD_XP"

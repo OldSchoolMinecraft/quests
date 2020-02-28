@@ -5,7 +5,15 @@ import dev.shog.osm.quest.handle.quests.Quest
 import org.bukkit.entity.Player
 import org.json.JSONObject
 
+/**
+ * @param name The name of the task
+ * @param osmQuests The [OsmQuests] instance
+ * @Param data The for the task. This is empty if there's no previous data.
+ */
 abstract class QuestTask(val name: String, val osmQuests: OsmQuests, val data: JSONObject) {
+    /**
+     * When the player is complete with the task.
+     */
     var onPlayerComplete: OsmQuests.(Player) -> Unit = {}
 
     /**
@@ -14,8 +22,14 @@ abstract class QuestTask(val name: String, val osmQuests: OsmQuests, val data: J
      */
     abstract val identifier: String
 
+    /**
+     * If [player] is complete with this [QuestTask].
+     */
     abstract fun isComplete(player: Player): Boolean
 
+    /**
+     * Get the save data from a [QuestTask].
+     */
     abstract fun getSaveData(quest: Quest): JSONObject
 
     /**

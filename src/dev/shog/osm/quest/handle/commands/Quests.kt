@@ -6,6 +6,9 @@ import dev.shog.osm.quest.sendMultiline
 import org.bukkit.command.CommandExecutor
 import org.bukkit.entity.Player
 
+/**
+ * View your quests.
+ */
 val VIEW_QUESTS = { osmQuests: OsmQuests ->
     CommandExecutor { sender, cmd, label, args ->
         if (sender is Player) {

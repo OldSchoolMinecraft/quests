@@ -32,10 +32,8 @@ object QuestParser {
 
     /**
      * Save [quest] to [DIR].
-     *
-     * TODO change [usePretty] to false
      */
-    fun saveQuest(quest: Quest, usePretty: Boolean = true) {
+    fun saveQuest(quest: Quest, usePretty: Boolean = false) {
         val data = quest.getSaveData()
         val file = File(DIR.path + File.separator + "${quest.questName.replace(" ", "_")}.json")
 
