@@ -14,7 +14,9 @@
                 "block-place": "§8{0}§7/§8{1} {2} §7blocks placed",
                 "wolf-tame": "§8{0}§7/§8{1} §7wolfs tamed",
                 "block-break": "§8{0}§7/§8{1} {2} §7blocks broken",
-                "move": "§8{0}§7/§8{1} §7blocks traversed"
+                "move": "§8{0}§7/§8{1} §7blocks traversed",
+                "move-boat": "§8{0}§7/§8{1} §7blocks traversed in boat",
+                "move-minecart": "§8{0}§7/§8{1} §7blocks traversed in boat"
             }
         }
     }

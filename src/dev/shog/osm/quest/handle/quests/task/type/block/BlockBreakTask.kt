@@ -1,4 +1,4 @@
-package dev.shog.osm.quest.handle.quests.task.type
+package dev.shog.osm.quest.handle.quests.task.type.block
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import dev.shog.osm.quest.OsmQuests
@@ -10,15 +10,13 @@ import org.bukkit.entity.Player
 import org.bukkit.event.Event
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.block.BlockListener
-import org.bukkit.event.block.BlockPlaceEvent
-import org.json.JSONArray
 import org.json.JSONObject
 
 /**
- * A block place task.
- * You must place a [material] block [amount] times.
+ * A block break task.
+ * You must break a [material] block [amount] times.
  */
-class BlockPlaceTask(
+class BlockBreakTask(
     val material: Material,
     val amount: Int,
     osmQuests: OsmQuests,
@@ -26,21 +24,22 @@ class BlockPlaceTask(
     data: JSONObject
 ) : QuestTask(name, osmQuests, data) {
     private val status: HashMap<String, Int>
-    override val identifier: String = "BLOCK_PLACE"
+    override val identifier: String = "BLOCK_BREAK"
 
     init {
-        status = if (!data.isEmpty && data.has("status")) {
-            val status = data.getJSONObject("status")
+        status = if (!data.isEmpty && data.has("complete") && data.has("status")) {
+            val complete = data.getJSONArray("complete")
+
             val mapper = ObjectMapper()
 
             mapper.readValue(
-                status.toString(),
+                complete.toString(),
                 mapper.typeFactory.constructMapType(HashMap::class.java, String::class.java, Int::class.java)
             )
         } else hashMapOf()
 
-        osmQuests.server.pluginManager.registerEvent(Event.Type.BLOCK_PLACE, object : BlockListener() {
-            override fun onBlockPlace(event: BlockPlaceEvent?) {
+        osmQuests.server.pluginManager.registerEvent(Event.Type.BLOCK_BREAK,  object : BlockListener() {
+            override fun onBlockBreak(event: BlockBreakEvent?) {
                 if (event != null && event.block.type == material && !isComplete(event.player)) {
                     val current = status[event.player.name.toLowerCase()] ?: 0
 
@@ -84,6 +83,6 @@ class BlockPlaceTask(
     override fun getStatusForPlayer(player: Player): String {
         val status = status[player.name.toLowerCase()] ?: 0
 
-        return MessageHandler.getMessage("commands.view-quest.status.block-place", status.toLong(), amount, material.toString())
+        return MessageHandler.getMessage("commands.view-quest.status.block-break", status, amount, material.toString())
     }
 }

@@ -2,10 +2,13 @@ package dev.shog.osm.quest.handle.quests
 
 import dev.shog.osm.quest.OsmQuests
 import dev.shog.osm.quest.handle.quests.task.QuestTask
-import dev.shog.osm.quest.handle.quests.task.type.BlockBreakTask
-import dev.shog.osm.quest.handle.quests.task.type.BlockPlaceTask
-import dev.shog.osm.quest.handle.quests.task.type.MoveTask
+import dev.shog.osm.quest.handle.quests.task.type.block.BlockBreakTask
+import dev.shog.osm.quest.handle.quests.task.type.block.BlockPlaceTask
+import dev.shog.osm.quest.handle.quests.task.type.move.MoveTask
 import dev.shog.osm.quest.handle.quests.task.type.WolfTameTask
+import dev.shog.osm.quest.handle.quests.task.type.move.BoatMoveTask
+import dev.shog.osm.quest.handle.quests.task.type.move.MinecartMoveTask
+import org.bukkit.entity.Minecart
 import org.bukkit.entity.Player
 import org.json.JSONArray
 import org.json.JSONObject
@@ -69,6 +72,14 @@ abstract class Quest(
                 }
 
                 is MoveTask -> {
+                    obj.put("distance", task.distance)
+                }
+
+                is MinecartMoveTask -> {
+                    obj.put("distance", task.distance)
+                }
+
+                is BoatMoveTask -> {
                     obj.put("distance", task.distance)
                 }
             }

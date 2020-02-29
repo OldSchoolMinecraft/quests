@@ -1,50 +1,51 @@
-package dev.shog.osm.quest.handle.quests.task.type
+package dev.shog.osm.quest.handle.quests.task.type.move
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import dev.shog.osm.quest.OsmQuests
 import dev.shog.osm.quest.handle.MessageHandler
 import dev.shog.osm.quest.handle.quests.Quest
 import dev.shog.osm.quest.handle.quests.task.QuestTask
-import org.bukkit.Material
+import org.bukkit.entity.Boat
 import org.bukkit.entity.Player
 import org.bukkit.event.Event
-import org.bukkit.event.block.BlockBreakEvent
-import org.bukkit.event.block.BlockListener
-import org.json.JSONArray
+import org.bukkit.event.player.PlayerListener
+import org.bukkit.event.player.PlayerMoveEvent
 import org.json.JSONObject
 
 /**
- * A block break task.
- * You must break a [material] block [amount] times.
+ * A move task.
+ * You must travel [distance] blocks in a boat.
  */
-class BlockBreakTask(
-    val material: Material,
-    val amount: Int,
+class BoatMoveTask(
+    val distance: Long,
     osmQuests: OsmQuests,
     name: String,
     data: JSONObject
 ) : QuestTask(name, osmQuests, data) {
-    private val status: HashMap<String, Int>
-    override val identifier: String = "BLOCK_BREAK"
+    private val status: HashMap<String, Double>
+    override val identifier: String = "MOVE_BAT"
 
     init {
-        status = if (!data.isEmpty && data.has("complete") && data.has("status")) {
-            val complete = data.getJSONArray("complete")
-
+        status = if (!data.isEmpty && data.has("status")) {
+            val status = data.getJSONObject("status")
             val mapper = ObjectMapper()
 
             mapper.readValue(
-                complete.toString(),
-                mapper.typeFactory.constructMapType(HashMap::class.java, String::class.java, Int::class.java)
+                status.toString(),
+                mapper.typeFactory.constructMapType(HashMap::class.java, String::class.java, Double::class.java)
             )
         } else hashMapOf()
 
-        osmQuests.server.pluginManager.registerEvent(Event.Type.BLOCK_BREAK,  object : BlockListener() {
-            override fun onBlockBreak(event: BlockBreakEvent?) {
-                if (event != null && event.block.type == material && !isComplete(event.player)) {
-                    val current = status[event.player.name.toLowerCase()] ?: 0
+        osmQuests.server.pluginManager.registerEvent(Event.Type.PLAYER_MOVE, object : PlayerListener() {
+            override fun onPlayerMove(event: PlayerMoveEvent?) {
+                if (event != null
+                    && !isComplete(event.player)
+                    && event.player.isInsideVehicle
+                    && event.player.vehicle is Boat
+                ) {
+                    val current = status[event.player.name.toLowerCase()] ?: 0.0
 
-                    status[event.player.name.toLowerCase()] = current + 1
+                    status[event.player.name.toLowerCase()] = current + event.to.distance(event.from)
 
                     if (isComplete(event.player)) {
                         onPlayerComplete.invoke(osmQuests, event.player)
@@ -58,9 +59,9 @@ class BlockBreakTask(
      * If [player] has completed this task.
      */
     override fun isComplete(player: Player): Boolean {
-        val current = status[player.name.toLowerCase()] ?: 0
+        val current = status[player.name.toLowerCase()] ?: 0.0
 
-        return current >= amount
+        return current.toLong() >= distance
     }
 
     /**
@@ -84,6 +85,6 @@ class BlockBreakTask(
     override fun getStatusForPlayer(player: Player): String {
         val status = status[player.name.toLowerCase()] ?: 0
 
-        return MessageHandler.getMessage("commands.view-quest.status.block-break", status, amount, material.toString())
+        return MessageHandler.getMessage("commands.view-quest.status.move-boat", status, distance)
     }
 }

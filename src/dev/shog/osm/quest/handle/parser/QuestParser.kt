@@ -6,9 +6,11 @@ import dev.shog.osm.quest.handle.quests.BalanceRewardingQuest
 import dev.shog.osm.quest.handle.quests.Quest
 import dev.shog.osm.quest.handle.quests.XpRewardingQuest
 import dev.shog.osm.quest.handle.quests.task.QuestTask
-import dev.shog.osm.quest.handle.quests.task.type.BlockBreakTask
-import dev.shog.osm.quest.handle.quests.task.type.MoveTask
+import dev.shog.osm.quest.handle.quests.task.type.block.BlockBreakTask
+import dev.shog.osm.quest.handle.quests.task.type.move.MoveTask
 import dev.shog.osm.quest.handle.quests.task.type.WolfTameTask
+import dev.shog.osm.quest.handle.quests.task.type.move.BoatMoveTask
+import dev.shog.osm.quest.handle.quests.task.type.move.MinecartMoveTask
 import org.bukkit.Material
 import org.json.JSONObject
 import java.io.File
@@ -90,6 +92,18 @@ object QuestParser {
                     val distance = task.getLong("distance")
 
                     MoveTask(distance, osmQuests, taskName, taskData)
+                }
+
+                "move_boat" -> {
+                    val distance = task.getLong("distance")
+
+                    BoatMoveTask(distance, osmQuests, taskName, taskData)
+                }
+
+                "move_minecart" -> {
+                    val distance = task.getLong("distance")
+
+                    MinecartMoveTask(distance, osmQuests, taskName, taskData)
                 }
 
                 else -> throw Exception("Invalid task.")
