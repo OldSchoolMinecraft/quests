@@ -6,14 +6,16 @@ import org.bukkit.command.CommandExecutor
 import org.bukkit.entity.Player
 
 /**
- * View your XP.
+ * Rank up.
  */
-val VIEW_XP = CommandExecutor { sender, cmd, label, args ->
-    if (sender is Player) {
-        sender.sendMessage(MessageHandler.getMessage("commands.xp.xp", User.getUser(sender.name).xp))
-    } else {
+val RANK_UP = CommandExecutor { sender, cmd, label, args ->
+    if (sender !is Player) {
         sender.sendMessage(MessageHandler.getMessage("command.no-console"))
+        return@CommandExecutor true
     }
+    val user = User.getUser(sender.name)
+
+    user.rankUp(sender)
 
     true
 }

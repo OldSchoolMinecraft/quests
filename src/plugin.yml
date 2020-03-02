@@ -8,3 +8,7 @@ commands:
     description: View your XP.
   quests:
     description: View your complete and uncomplete quests.
+  rankup:
+    description: Rank up.
+  rank:
+    description: View your rank.

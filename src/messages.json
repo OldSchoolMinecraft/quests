@@ -3,7 +3,22 @@
         "task-complete": "§7You have completed the task §8{0} §7for the quest §8{1}§7!",
         "quest-complete": "§7You have been the quest §8{0}§7, and have been rewarded §8{1}§7!"
     },
+    "ranks": {
+        "max-rank": "§7You are the highest possible rank!",
+        "rank-up": "§7You have ranked up from §8{0}§7 to §8{1}§7!",
+        "not-meet": "§cYou cannot rank-up!"
+    },
     "commands": {
+        "no-console": "§cYou can't do this as console!",
+        "xp": {
+            "xp": "§7You currently have §8{0}§7 xp."
+        },
+        "rank": {
+            "default": "§7You are currently a §8{0}§7!\n\n{1}",
+            "next-rank": "§7The next rank is §8{0}§7:\n{1}", 
+            "max-rank": "§7You are the highest rank!",
+            "requirements": "§7Hours: §8{0}§7/§8{1}, §7XP: §8{2}§7/§8{3}§7 and Money: §8{4}§7/§8{5}"
+        },
         "view-quest": {
             "header": "§7Quests for §8{0}§7:",
             "uncomplete-quest": "§c{0}§7: §8{1}{2}",

@@ -2,8 +2,8 @@ package dev.shog.osm.quest.handle.quests
 
 import dev.shog.osm.quest.OsmQuests
 import dev.shog.osm.quest.handle.MessageHandler
-import dev.shog.osm.quest.handle.XpHandler
 import dev.shog.osm.quest.handle.quests.task.QuestTask
+import dev.shog.osm.quest.handle.ranks.user.User
 import org.bukkit.entity.Player
 
 /**
@@ -26,8 +26,9 @@ class XpRewardingQuest(
      * On complete give [player] [xpReward] xp
      */
     override fun onComplete(player: Player) {
-        val current = XpHandler.xp[player.name.toLowerCase()] ?: 0
-        XpHandler.xp[player.name.toLowerCase()] = current + xpReward
+        val user = User.getUser(player.name)
+
+        user.xp += xpReward
 
         player.sendMessage(MessageHandler.getMessage("quests.quest-complete", questName, rewardString))
     }
