@@ -19,9 +19,10 @@ class XpRewardingQuest(
     name: String,
     tasks: List<QuestTask>,
     osmQuests: OsmQuests,
+    donor: Boolean,
     val xpReward: Long,
     override val rewardString: String
-) : Quest(name, tasks, osmQuests) {
+) : Quest(name, tasks, donor, osmQuests) {
     /**
      * On complete give [player] [xpReward] xp
      */

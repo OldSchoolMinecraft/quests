@@ -1,5 +1,6 @@
 package dev.shog.osm.quest
 
+import dev.shog.osm.quest.handle.parser.QuestParser
 import org.bukkit.command.CommandSender
 
 /**

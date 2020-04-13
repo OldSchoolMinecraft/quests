@@ -5,7 +5,6 @@ import dev.shog.osm.quest.OsmQuests
 import dev.shog.osm.quest.handle.MessageHandler
 import dev.shog.osm.quest.handle.quests.Quest
 import dev.shog.osm.quest.handle.quests.task.QuestTask
-import org.bukkit.entity.Boat
 import org.bukkit.entity.Player
 import org.bukkit.event.Event
 import org.bukkit.event.player.PlayerListener
@@ -13,18 +12,18 @@ import org.bukkit.event.player.PlayerMoveEvent
 import org.json.JSONObject
 
 /**
- * A move task.
- * You must travel [distance] blocks in a boat.
+ * A jump task.
+ * You must jump [times] times.
  */
-class BoatMoveTask(
-    val distance: Long,
+class JumpTask(
+    val times: Long,
     osmQuests: OsmQuests,
     name: String,
     donor: Boolean,
     data: JSONObject
 ) : QuestTask(name, osmQuests, donor, data) {
-    private val status: HashMap<String, Double>
-    override val identifier: String = "MOVE_BOAT"
+    private val status: HashMap<String, Int>
+    override val identifier: String = "JUMP"
 
     init {
         status = if (!data.isEmpty) {
@@ -32,24 +31,25 @@ class BoatMoveTask(
 
             mapper.readValue(
                 data.toString(),
-                mapper.typeFactory.constructMapType(HashMap::class.java, String::class.java, Double::class.java)
+                mapper.typeFactory.constructMapType(HashMap::class.java, String::class.java, Int::class.java)
             )
         } else hashMapOf()
 
         osmQuests.server.pluginManager.registerEvent(Event.Type.PLAYER_MOVE, object : PlayerListener() {
             override fun onPlayerMove(event: PlayerMoveEvent?) {
-                if (event != null
-                    && !isComplete(event.player)
-                    && event.player.isInsideVehicle
-                    && event.player.vehicle is Boat
-                    && userOk(event.player)
-                ) {
-                    val current = status[event.player.name.toLowerCase()] ?: 0.0
+                if (event != null && !isComplete(event.player) && userOk(event.player)) {
+                    val current = status[event.player.name.toLowerCase()] ?: 0
 
-                    status[event.player.name.toLowerCase()] = current + event.to.distance(event.from)
+                    val to = event.to.block.location
+                    val from = event.from.block.location
 
-                    if (isComplete(event.player)) {
-                        onPlayerComplete.invoke(osmQuests, event.player)
+                    // Checking if they moved to the block right above previous block.
+                    if (to.blockX == from.blockX && to.blockZ == from.blockZ && from.blockY + 1 == to.blockY) {
+                        status[event.player.name.toLowerCase()] = current + 1
+
+                        if (isComplete(event.player)) {
+                            onPlayerComplete.invoke(osmQuests, event.player)
+                        }
                     }
                 }
             }
@@ -60,9 +60,9 @@ class BoatMoveTask(
      * If [player] has completed this task.
      */
     override fun isComplete(player: Player): Boolean {
-        val current = status[player.name.toLowerCase()] ?: 0.0
+        val current = status[player.name.toLowerCase()] ?: 0
 
-        return current.toLong() >= distance
+        return current.toLong() >= times
     }
 
     /**
@@ -80,6 +80,6 @@ class BoatMoveTask(
     override fun getStatusString(player: Player): String {
         val status = status[player.name.toLowerCase()] ?: 0
 
-        return MessageHandler.getMessage("commands.view-quest.status.move-boat", status, distance)
+        return MessageHandler.getMessage("commands.view-quest.status.jump", status, times)
     }
 }

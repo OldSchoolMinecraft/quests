@@ -9,7 +9,10 @@ import dev.shog.osm.quest.handle.quests.task.QuestTask
 import dev.shog.osm.quest.handle.quests.task.type.block.BlockBreakTask
 import dev.shog.osm.quest.handle.quests.task.type.move.MoveTask
 import dev.shog.osm.quest.handle.quests.task.type.WolfTameTask
+import dev.shog.osm.quest.handle.quests.task.type.entity.EntityKillTask
+import dev.shog.osm.quest.handle.quests.task.type.entity.EntityType
 import dev.shog.osm.quest.handle.quests.task.type.move.BoatMoveTask
+import dev.shog.osm.quest.handle.quests.task.type.move.JumpTask
 import dev.shog.osm.quest.handle.quests.task.type.move.MinecartMoveTask
 import org.bukkit.Material
 import org.json.JSONObject
@@ -56,6 +59,7 @@ object QuestParser {
         val identifier = data.getString("identifier")
         val name = data.getString("name")
         val reward = data.getString("reward")
+        val donor = data.getBoolean("donor")
 
         val parsedTasks = mutableListOf<QuestTask>()
         val tasks = data.getJSONArray("tasks")
@@ -72,38 +76,53 @@ object QuestParser {
                     val material = Material.getMaterial(task.getString("material"))
                     val amount = task.getInt("amount")
 
-                    BlockBreakTask(material, amount, osmQuests, taskName, taskData)
+                    BlockBreakTask(material, amount, osmQuests, taskName, donor, taskData)
                 }
 
                 "wolf_tame" -> {
                     val amount = task.getInt("amount")
 
-                    WolfTameTask(amount, osmQuests, taskName, taskData)
+                    WolfTameTask(amount, osmQuests, taskName, donor, taskData)
                 }
 
                 "block_place" -> {
                     val material = Material.getMaterial(task.getString("material"))
                     val amount = task.getInt("amount")
 
-                    BlockBreakTask(material, amount, osmQuests, taskName, taskData)
+                    BlockBreakTask(material, amount, osmQuests, taskName, donor, taskData)
                 }
 
                 "move" -> {
                     val distance = task.getLong("distance")
 
-                    MoveTask(distance, osmQuests, taskName, taskData)
+                    MoveTask(distance, osmQuests, taskName, donor, taskData)
                 }
 
                 "move_boat" -> {
                     val distance = task.getLong("distance")
 
-                    BoatMoveTask(distance, osmQuests, taskName, taskData)
+                    BoatMoveTask(distance, osmQuests, taskName, donor, taskData)
                 }
 
                 "move_minecart" -> {
                     val distance = task.getLong("distance")
 
-                    MinecartMoveTask(distance, osmQuests, taskName, taskData)
+                    MinecartMoveTask(distance, osmQuests, taskName, donor, taskData)
+                }
+
+                "jump" -> {
+                    val times = task.getLong("times")
+
+                    JumpTask(times, osmQuests, taskName, donor, taskData)
+                }
+
+                "entity_kill" -> {
+                    val type = task.getString("type")
+                    val parsedType = EntityType.valueOf(type)
+
+                    val amount = task.getInt("amount")
+
+                    EntityKillTask(parsedType, amount, osmQuests, taskName, donor, taskData)
                 }
 
                 else -> throw Exception("Invalid task.")
@@ -114,11 +133,11 @@ object QuestParser {
 
         return when (identifier.toLowerCase()) {
             "reward_xp" -> {
-                XpRewardingQuest(name, parsedTasks, osmQuests, data.getLong("xpReward"), reward)
+                XpRewardingQuest(name, parsedTasks, osmQuests, donor, data.getLong("xpReward"), reward)
             }
 
             "balance_reward" -> {
-                BalanceRewardingQuest(name, parsedTasks, osmQuests, data.getDouble("balanceReward"), reward)
+                BalanceRewardingQuest(name, parsedTasks, osmQuests, donor, data.getDouble("balanceReward"), reward)
             }
 
             else -> throw Exception("Invalid quest identifier.")

@@ -19,9 +19,10 @@ class BalanceRewardingQuest(
     name: String,
     tasks: List<QuestTask>,
     osmQuests: OsmQuests,
+    donor: Boolean,
     val balReward: Double,
     override val rewardString: String
-) : Quest(name, tasks, osmQuests) {
+) : Quest(name, tasks, donor, osmQuests) {
     /**
      * On complete give [player] $[balReward]
      */

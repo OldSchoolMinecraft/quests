@@ -12,3 +12,5 @@ commands:
     description: Rank up.
   rank:
     description: View your rank.
+  osmq_debug:
+    description: Debug.

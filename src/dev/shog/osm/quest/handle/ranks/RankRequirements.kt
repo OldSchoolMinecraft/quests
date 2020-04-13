@@ -16,7 +16,8 @@ class RankRequirements(val xp: Long, val balance: Double, val timeHr: Long) {
     fun hasRequirements(player: Player): Boolean {
         val user = User.getUser(player.name)
 
-        // TODO check for time
-        return user.xp >= xp && Economy.hasEnough(player.name, balance)
+        return user.xp >= xp
+                && user.getPlayTime() / 1000 / 60 / 60 >= timeHr
+                && Economy.hasEnough(player.name, balance)
     }
 }

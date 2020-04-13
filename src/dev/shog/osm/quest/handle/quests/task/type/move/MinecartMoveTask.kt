@@ -21,18 +21,18 @@ class MinecartMoveTask(
     val distance: Long,
     osmQuests: OsmQuests,
     name: String,
+    donor: Boolean,
     data: JSONObject
-) : QuestTask(name, osmQuests, data) {
+) : QuestTask(name, osmQuests, donor, data) {
     private val status: HashMap<String, Double>
     override val identifier: String = "MOVE_MINECART"
 
     init {
-        status = if (!data.isEmpty && data.has("status")) {
-            val status = data.getJSONObject("status")
+        status = if (!data.isEmpty) {
             val mapper = ObjectMapper()
 
             mapper.readValue(
-                status.toString(),
+                data.toString(),
                 mapper.typeFactory.constructMapType(HashMap::class.java, String::class.java, Double::class.java)
             )
         } else hashMapOf()
@@ -43,6 +43,7 @@ class MinecartMoveTask(
                     && !isComplete(event.player)
                     && event.player.isInsideVehicle
                     && event.player.vehicle is Minecart
+                    && userOk(event.player)
                 ) {
                     val current = status[event.player.name.toLowerCase()] ?: 0.0
 
@@ -71,19 +72,13 @@ class MinecartMoveTask(
     override fun getSaveData(quest: Quest): JSONObject {
         val mapper = ObjectMapper()
 
-        val st = JSONObject(mapper.writeValueAsString(status))
-
-        val obj = JSONObject()
-
-        obj.put("status", st)
-
-        return obj
+        return JSONObject(mapper.writeValueAsString(status))
     }
 
     /**
      * The player's status. "0/1 wood blocks placed" etc
      */
-    override fun getStatusForPlayer(player: Player): String {
+    override fun getStatusString(player: Player): String {
         val status = status[player.name.toLowerCase()] ?: 0
 
         return MessageHandler.getMessage("commands.view-quest.status.minecart", status, distance)

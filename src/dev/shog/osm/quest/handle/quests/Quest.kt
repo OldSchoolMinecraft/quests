@@ -1,12 +1,15 @@
 package dev.shog.osm.quest.handle.quests
 
 import dev.shog.osm.quest.OsmQuests
+import dev.shog.osm.quest.handle.MessageHandler
 import dev.shog.osm.quest.handle.quests.task.QuestTask
 import dev.shog.osm.quest.handle.quests.task.type.block.BlockBreakTask
 import dev.shog.osm.quest.handle.quests.task.type.block.BlockPlaceTask
 import dev.shog.osm.quest.handle.quests.task.type.move.MoveTask
 import dev.shog.osm.quest.handle.quests.task.type.WolfTameTask
+import dev.shog.osm.quest.handle.quests.task.type.entity.EntityKillTask
 import dev.shog.osm.quest.handle.quests.task.type.move.BoatMoveTask
+import dev.shog.osm.quest.handle.quests.task.type.move.JumpTask
 import dev.shog.osm.quest.handle.quests.task.type.move.MinecartMoveTask
 import org.bukkit.entity.Minecart
 import org.bukkit.entity.Player
@@ -23,6 +26,7 @@ import org.json.JSONObject
 abstract class Quest(
     val questName: String,
     val tasks: List<QuestTask>,
+    val donor: Boolean,
     private val osmQuests: OsmQuests
 ) {
     /**
@@ -56,33 +60,7 @@ abstract class Quest(
             obj.put("identifier", task.identifier)
             obj.put("data", task.getSaveData(this))
 
-            when (task) {
-                is BlockBreakTask -> {
-                    obj.put("material", task.material)
-                    obj.put("amount", task.amount)
-                }
-
-                is BlockPlaceTask -> {
-                    obj.put("material", task.material)
-                    obj.put("amount", task.amount)
-                }
-
-                is WolfTameTask -> {
-                    obj.put("amount", task.amount)
-                }
-
-                is MoveTask -> {
-                    obj.put("distance", task.distance)
-                }
-
-                is MinecartMoveTask -> {
-                    obj.put("distance", task.distance)
-                }
-
-                is BoatMoveTask -> {
-                    obj.put("distance", task.distance)
-                }
-            }
+            specialAttributes(task, obj)
 
             questTasks.put(obj)
         }
@@ -91,6 +69,7 @@ abstract class Quest(
         data.put("name", questName)
         data.put("reward", rewardString)
         data.put("identifier", identifier)
+        data.put("donor", donor)
 
         when (this) {
             is BalanceRewardingQuest -> {
@@ -115,16 +94,52 @@ abstract class Quest(
     }
 
     /**
-     * Get all of the tasks that haven't been completed by [player].
+     * Add task specific attributes to [obj]
      */
-    fun getMissingTasks(player: Player): List<QuestTask> =
-        tasks.filter { task -> !task.isComplete(player) }
+    private fun specialAttributes(task: QuestTask, obj: JSONObject) {
+        when (task) {
+            is BlockBreakTask -> {
+                obj.put("material", task.material)
+                obj.put("amount", task.amount)
+            }
+
+            is BlockPlaceTask -> {
+                obj.put("material", task.material)
+                obj.put("amount", task.amount)
+            }
+
+            is WolfTameTask -> {
+                obj.put("amount", task.amount)
+            }
+
+            is MoveTask -> {
+                obj.put("distance", task.distance)
+            }
+
+            is MinecartMoveTask -> {
+                obj.put("distance", task.distance)
+            }
+
+            is BoatMoveTask -> {
+                obj.put("distance", task.distance)
+            }
+
+            is JumpTask -> {
+                obj.put("times", task.times)
+            }
+
+            is EntityKillTask -> {
+                obj.put("type", task.entity)
+                obj.put("amount", task.amount)
+            }
+        }
+    }
 
     init {
         // Add a player complete to each task
         tasks.forEach { task ->
             task.onPlayerComplete = { player ->
-                player.sendMessage("You have completed ${task.name}")
+                player.sendMessage(MessageHandler.getMessage("quests.task-complete", task.name, questName))
 
                 if (isComplete(player))
                     onComplete(player)

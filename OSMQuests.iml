@@ -13,5 +13,6 @@
     <orderEntry type="library" name="com.fasterxml.jackson.core:jackson-databind:2.10.2" level="project" />
     <orderEntry type="library" name="org.json:json:20190722" level="project" />
     <orderEntry type="library" name="mysql:mysql-connector-java:8.0.15" level="project" />
+    <orderEntry type="library" name="OSMUtil" level="project" />
   </component>
 </module>

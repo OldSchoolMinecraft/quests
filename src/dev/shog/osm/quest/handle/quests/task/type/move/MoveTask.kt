@@ -19,25 +19,25 @@ class MoveTask(
     val distance: Long,
     osmQuests: OsmQuests,
     name: String,
+    donor: Boolean,
     data: JSONObject
-) : QuestTask(name, osmQuests, data) {
+) : QuestTask(name, osmQuests, donor, data) {
     private val status: HashMap<String, Double>
     override val identifier: String = "MOVE"
 
     init {
-        status = if (!data.isEmpty && data.has("status")) {
-            val status = data.getJSONObject("status")
+        status = if (!data.isEmpty) {
             val mapper = ObjectMapper()
 
             mapper.readValue(
-                status.toString(),
+                data.toString(),
                 mapper.typeFactory.constructMapType(HashMap::class.java, String::class.java, Double::class.java)
             )
         } else hashMapOf()
 
         osmQuests.server.pluginManager.registerEvent(Event.Type.PLAYER_MOVE, object : PlayerListener() {
             override fun onPlayerMove(event: PlayerMoveEvent?) {
-                if (event != null && !isComplete(event.player)) {
+                if (event != null && !isComplete(event.player) && userOk(event.player)) {
                     val current = status[event.player.name.toLowerCase()] ?: 0.0
 
                     val to = event.to.block
@@ -70,19 +70,13 @@ class MoveTask(
     override fun getSaveData(quest: Quest): JSONObject {
         val mapper = ObjectMapper()
 
-        val st = JSONObject(mapper.writeValueAsString(status))
-
-        val obj = JSONObject()
-
-        obj.put("status", st)
-
-        return obj
+        return JSONObject(mapper.writeValueAsString(status))
     }
 
     /**
      * The player's status. "0/1 wood blocks placed" etc
      */
-    override fun getStatusForPlayer(player: Player): String {
+    override fun getStatusString(player: Player): String {
         val status = status[player.name.toLowerCase()] ?: 0
 
         return MessageHandler.getMessage("commands.view-quest.status.move", status, distance)

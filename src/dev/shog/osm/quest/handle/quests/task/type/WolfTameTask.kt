@@ -24,8 +24,9 @@ class WolfTameTask(
     val amount: Int,
     osmQuests: OsmQuests,
     name: String,
+    donor: Boolean,
     data: JSONObject
-) : QuestTask(name, osmQuests, data) {
+) : QuestTask(name, osmQuests, donor, data) {
     private val status: HashMap<String, Int>
     override val identifier: String = "WOLF_TAME"
 
@@ -45,7 +46,7 @@ class WolfTameTask(
                 if (event != null) {
                     val player = event.owner as Player
 
-                    if (event.entity is Wolf && !isComplete(player)) {
+                    if (event.entity is Wolf && userOk(player) && !isComplete(player)) {
                         val current = status[player.name.toLowerCase()] ?: 0
 
                         status[player.name.toLowerCase()] = current + 1
@@ -87,7 +88,7 @@ class WolfTameTask(
     /**
      * The player's status. "0/1 wood blocks placed" etc
      */
-    override fun getStatusForPlayer(player: Player): String {
+    override fun getStatusString(player: Player): String {
         val status = status[player.name.toLowerCase()] ?: 0
 
         return MessageHandler.getMessage("commands.view-quest.status.wolf-tame", status, amount)

@@ -5,6 +5,7 @@ import dev.shog.osm.quest.handle.MessageHandler
 import dev.shog.osm.quest.handle.ranks.Ladder
 import dev.shog.osm.quest.handle.ranks.user.User
 import dev.shog.osm.quest.sendMultiline
+import dev.shog.osm.util.fancyDate
 import org.bukkit.command.CommandExecutor
 import org.bukkit.entity.Player
 
@@ -24,7 +25,7 @@ val RANK = CommandExecutor { sender, cmd, label, args ->
         MessageHandler.getMessage("commands.rank.next-rank",
             upperRank.name,
             MessageHandler.getMessage("commands.rank.requirements",
-                user.getHours(), upperRank.requirements.timeHr,
+                user.getPlayTime().fancyDate(), upperRank.requirements.timeHr,
                 user.xp, upperRank.requirements.xp,
                 Economy.getMoney(sender.name), upperRank.requirements.balance
             )

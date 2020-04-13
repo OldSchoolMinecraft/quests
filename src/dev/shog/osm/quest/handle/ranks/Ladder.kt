@@ -1,17 +1,18 @@
 package dev.shog.osm.quest.handle.ranks
 
+import dev.shog.osm.quest.handle.MessageHandler
 import dev.shog.osm.quest.handle.ranks.user.User
 
 object Ladder {
     private val LADDER = arrayOf(
-        Rank("Player", "§8[Player]§7", RankRequirements(0, 0.0, 0)),
-        Rank("Newcomer", "§8[Newcomer]§7", RankRequirements(10, 150.0, 5)),
-        Rank("Traveller", "§8[Traveller]§7", RankRequirements(50, 250.0, 25)),
-        Rank("Known", "§8[Known]§7", RankRequirements(150, 500.0, 75)),
-        Rank("Expert", "§8[Expert]§7", RankRequirements(300, 750.0, 150)),
-        Rank("Elite", "§8[Elite]§7", RankRequirements(500, 1000.0, 250)),
-        Rank("Virtuoso", "§8[Virtuoso]§7", RankRequirements(800, 1015.0, 400)),
-        Rank("Veteran", "§8[Veteran]§7", RankRequirements(1000, 5000.8925, 700))
+        Rank("Player", MessageHandler.getMessage("prefix.player"), RankRequirements(0, 0.0, 0)),
+        Rank("Newcomer", MessageHandler.getMessage("prefix.newcomer"), RankRequirements(10, 150.0, 5)),
+        Rank("Traveller", MessageHandler.getMessage("prefix.traveller"), RankRequirements(50, 250.0, 25)),
+        Rank("Known", MessageHandler.getMessage("prefix.known"), RankRequirements(150, 500.0, 75)),
+        Rank("Expert", MessageHandler.getMessage("prefix.expert"), RankRequirements(300, 750.0, 150)),
+        Rank("Elite", MessageHandler.getMessage("prefix.elite"), RankRequirements(500, 1000.0, 250)),
+        Rank("Virtuoso", MessageHandler.getMessage("prefix.virtuoso"), RankRequirements(800, 1015.0, 400)),
+        Rank("Veteran", MessageHandler.getMessage("prefix.veteran"), RankRequirements(1000, 5000.8925, 700))
     )
 
     /**

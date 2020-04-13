@@ -3,8 +3,10 @@ package dev.shog.osm.quest.handle.ranks.user
 import dev.shog.osm.quest.handle.MessageHandler
 import dev.shog.osm.quest.handle.SqlHandler
 import dev.shog.osm.quest.handle.ranks.Ladder
+import dev.shog.osm.util.api.data.DataManager
 import org.bukkit.entity.Player
 import ru.tehkode.permissions.bukkit.PermissionsEx
+import java.util.concurrent.ConcurrentHashMap
 
 /**
  * A user.
@@ -15,12 +17,17 @@ import ru.tehkode.permissions.bukkit.PermissionsEx
  */
 class User internal constructor(user: String, rank: Int = 0, xp: Long = 0) {
     companion object {
+        private val USER_CACHE = ConcurrentHashMap<String, User>()
+
         /**
          * Get a user by their [username].
          *
          * If they don't exist, create an empty [User].
          */
         fun getUser(username: String): User {
+            if (USER_CACHE.contains(username.toLowerCase()))
+                return USER_CACHE[username.toLowerCase()]!!
+
             val prepared = SqlHandler.getConnection()
                 .prepareStatement("SELECT * FROM quests WHERE username = ?")
 
@@ -28,7 +35,7 @@ class User internal constructor(user: String, rank: Int = 0, xp: Long = 0) {
 
             val rs = prepared.executeQuery()
 
-            return if (!rs.next()) {
+            val user = if (!rs.next()) {
                 val newPrepared = SqlHandler.getConnection()
                     .prepareStatement("INSERT INTO quests (username) VALUES (?)")
 
@@ -40,6 +47,9 @@ class User internal constructor(user: String, rank: Int = 0, xp: Long = 0) {
             } else {
                 User(username, rs.getInt("rank"), rs.getLong("xp"))
             }
+
+            USER_CACHE[username.toLowerCase()] = user
+            return user
         }
     }
 
@@ -83,10 +93,13 @@ class User internal constructor(user: String, rank: Int = 0, xp: Long = 0) {
         }
 
     /**
-     * TODO
+     * Get a user's playtime from OSMUtil
      */
-    fun getHours(): Long {
-        return 5
+    fun getPlayTime(): Long {
+        val user = DataManager.getUserData(username)
+            ?: throw Exception("Invalid user name when getting hours.")
+
+        return user.playTime
     }
 
     /**
