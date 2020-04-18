@@ -17,6 +17,7 @@ import dev.shog.osm.quest.handle.quests.task.type.move.MinecartMoveTask
 import org.bukkit.Material
 import org.json.JSONObject
 import java.io.File
+import java.util.*
 
 /**
  * Manage the saving of quests.
@@ -25,14 +26,15 @@ object QuestParser {
     /**
      * Get all of the quests from [DIR].
      */
-    fun getAllQuests(osmQuests: OsmQuests): MutableList<Quest> {
+    fun getAllQuests(osmQuests: OsmQuests): LinkedList<Quest> {
         val files = DIR.listFiles()
 
-        return files
+        val list = files
             ?.filter { file -> file.extension.equals("json", true) }
             ?.map { file -> getQuest(file, osmQuests) }
-            ?.toMutableList()
-            ?: mutableListOf()
+            ?: listOf()
+
+        return LinkedList(list)
     }
 
     /**

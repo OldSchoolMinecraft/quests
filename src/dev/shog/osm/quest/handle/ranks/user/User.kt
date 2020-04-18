@@ -111,13 +111,14 @@ class User internal constructor(user: String, rank: Int = 0, xp: Long = 0) {
 
         if (rank != null) {
             val req = rank.requirements
+            val meets = req.hasRequirements(player)
 
-            if (req.hasRequirements(player)) {
+            if (meets == null) {
                 player.sendMessage(MessageHandler.getMessage("ranks.rank-up", oldRank?.name, rank.name))
 
                 this.rank += 1
                 PermissionsEx.getPermissionManager().getUser(player).setPrefix(rank.prefix, "world")
-            } else player.sendMessage(MessageHandler.getMessage("ranks.not-meet"))
+            } else player.sendMessage(meets)
         } else {
             player.sendMessage(MessageHandler.getMessage("ranks.max-rank"))
         }

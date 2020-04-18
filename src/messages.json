@@ -16,7 +16,11 @@
     "ranks": {
         "max-rank": "§7You are the highest possible rank!",
         "rank-up": "§7You have ranked up from §8{0}§7 to §8{1}§7!",
-        "not-meet": "§cYou cannot rank-up!"
+        "not-meet": {
+            "no-bal": "§7You are missing §8${0}§7.",
+            "no-time": "§7You are missing §8{0} hours§7 of playtime.",
+            "no-xp": "§7You are missing §8{0} xp§7."
+        }
     },
     "commands": {
         "no-console": "§cYou can't do this as console!",
@@ -30,11 +34,11 @@
             "requirements": "§7Hours: §8{0}§7/§8{1}, §7XP: §8{2}§7/§8{3}§7 and Money: §8{4}§7/§8{5}"
         },
         "quests": {
-            "header": "§7More information about a quest can be seen using §8/quests {name without spaces}\n§7Quests that have a §eS in-front of them are supporter only.\n\n",
-            "uncomplete-quest": "§c{0}§7",
-            "complete-quest": "§a{0}§7",
-            "supporter-uncomplete-quest": "§eS §c{0}§7",
-            "supporter-complete-quest": "§eS §a{0}§7",
+            "header": "§7More information about a quest can be seen using §8/quests {number}\n§7Quests that have a §eS§7 in-front of them are supporter only.\n\n",
+            "uncomplete-quest": "§c{0}§7 §8({1})§7",
+            "complete-quest": "§a{0}§7 §8({1})§7",
+            "supporter-uncomplete-quest": "§eS §c{0} §8({1})§7",
+            "supporter-complete-quest": "§eS §a{0} §8({1})§7",
             "invalid-quest": "§cThat quest doesn't exist!",
             "quest-viewer": {
                 "uncomplete-quest": "§7Quest: §c{0}§7: §8{1}",

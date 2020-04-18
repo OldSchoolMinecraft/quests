@@ -32,7 +32,11 @@ val VIEW_QUESTS = { osmQuests: OsmQuests ->
         }
 
         if (args.size == 1) {
-            val quest = osmQuests.quests.singleOrNull { quest -> quest.questName.equals(args[0], true) }
+            val quest = try {
+                osmQuests.quests[args[0].toInt()]
+            } catch (ex: Exception) {
+                null
+            }
 
             if (quest == null) {
                 sender.sendMessage(MessageHandler.getMessage("commands.quests.invalid-quest"))
@@ -63,14 +67,15 @@ val VIEW_QUESTS = { osmQuests: OsmQuests ->
 
         var message = MessageHandler.getMessage("commands.quests.header")
 
-        message += osmQuests.quests.joinToString { quest ->
-            MessageHandler.getMessage(
+        osmQuests.quests.forEachIndexed { i, quest ->
+            message += "${MessageHandler.getMessage(
                 getQuestNameLink(quest, quest.isComplete(sender)),
-                quest.questName
-            )
+                quest.questName,
+                i
+            )}, "
         }
 
-        sender.sendMultiline(message)
+        sender.sendMultiline(message.removeSuffix(", "))
 
         true
     }

@@ -8,7 +8,7 @@ import org.bukkit.entity.Player
 /**
  * Rank up.
  */
-val RANK_UP = CommandExecutor { sender, cmd, label, args ->
+val RANK_UP = CommandExecutor { sender, _, label, args ->
     if (sender !is Player) {
         sender.sendMessage(MessageHandler.getMessage("command.no-console"))
         return@CommandExecutor true

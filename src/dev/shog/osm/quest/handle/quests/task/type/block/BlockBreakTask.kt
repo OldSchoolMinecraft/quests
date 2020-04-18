@@ -81,6 +81,6 @@ class BlockBreakTask(
     override fun getStatusString(player: Player): String {
         val status = status[player.name.toLowerCase()] ?: 0
 
-        return MessageHandler.getMessage("commands.view-quest.status.block-break", status, amount, material.toString())
+        return MessageHandler.getMessage("commands.view-quest.status.block-break", status, amount, material.name)
     }
 }
