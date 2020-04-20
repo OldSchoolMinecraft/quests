@@ -58,7 +58,7 @@
                 "move-boat": "§8{0}§7/§8{1} §7blocks traversed in boat",
                 "move-minecart": "§8{0}§7/§8{1} §7blocks traversed in boat",
                 "jump": "§8{0}§7/§8{1} §7times jumped",
-                "entity-kill": "§8{0}§7/§8{1} §8{2}§7s killed"
+                "entity-kill": "§8{0}§7/§8{1}§7 {2}s killed"
             }
         }
     }

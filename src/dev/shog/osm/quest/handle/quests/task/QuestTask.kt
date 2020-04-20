@@ -1,6 +1,7 @@
 package dev.shog.osm.quest.handle.quests.task
 
 import dev.shog.osm.quest.OsmQuests
+import dev.shog.osm.quest.handle.Donor
 import dev.shog.osm.quest.handle.quests.Quest
 import dev.shog.osm.util.api.OsmApi
 import org.bukkit.entity.Player
@@ -49,14 +50,9 @@ abstract class QuestTask(
      * If the user meets the requirements (donor)
      */
     fun userOk(player: Player): Boolean {
-
-        val userDOno = OsmApi.isDonor(player.name).join()
-
-        println("$donor || $userDOno")
-
         if (!donor)
             return true
 
-        return OsmApi.isDonor(player.name).join() // TODO
+        return Donor.check(player.name)
     }
 }

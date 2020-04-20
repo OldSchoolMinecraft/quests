@@ -80,6 +80,6 @@ class BoatMoveTask(
     override fun getStatusString(player: Player): String {
         val status = status[player.name.toLowerCase()] ?: 0
 
-        return MessageHandler.getMessage("commands.view-quest.status.move-boat", status, distance)
+        return MessageHandler.getMessage("commands.view-quest.status.move-boat", status.toInt(), distance)
     }
 }

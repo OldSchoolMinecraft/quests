@@ -79,6 +79,6 @@ class MoveTask(
     override fun getStatusString(player: Player): String {
         val status = status[player.name.toLowerCase()] ?: 0
 
-        return MessageHandler.getMessage("commands.view-quest.status.move", status, distance)
+        return MessageHandler.getMessage("commands.view-quest.status.move", status.toInt(), distance)
     }
 }

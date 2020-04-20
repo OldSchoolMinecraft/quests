@@ -81,6 +81,6 @@ class MinecartMoveTask(
     override fun getStatusString(player: Player): String {
         val status = status[player.name.toLowerCase()] ?: 0
 
-        return MessageHandler.getMessage("commands.view-quest.status.minecart", status, distance)
+        return MessageHandler.getMessage("commands.view-quest.status.minecart", status.toInt(), distance)
     }
 }

@@ -45,7 +45,7 @@ class EntityKillTask(
                     if (ldc is EntityDamageByEntityEvent && ldc.damager is Player) {
                         val player = ldc.damager as Player
 
-                        if (userOk(player)) {
+                        if (userOk(player) && !isComplete(player)) {
                             val current = status[player.name.toLowerCase()] ?: 0
 
                             status[player.name.toLowerCase()] = current + 1
