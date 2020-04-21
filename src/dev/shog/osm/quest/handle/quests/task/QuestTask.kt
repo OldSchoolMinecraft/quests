@@ -53,6 +53,6 @@ abstract class QuestTask(
         if (!donor)
             return true
 
-        return Donor.check(player.name)
+        return Donor.check(player)
     }
 }

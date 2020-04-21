@@ -16,9 +16,12 @@ import org.bukkit.Material
 import org.bukkit.plugin.java.JavaPlugin
 import org.json.JSONObject
 import java.util.*
+import java.util.concurrent.TimeUnit
+import kotlin.concurrent.timerTask
 
 class OsmQuests : JavaPlugin() {
     lateinit var quests: LinkedList<Quest>
+    val timer = Timer()
 
     override fun onEnable() {
         getCommand("xp").executor = VIEW_XP
@@ -33,6 +36,11 @@ class OsmQuests : JavaPlugin() {
         SqlHandler.username = configuration.getString("username")
         SqlHandler.password = configuration.getString("password")
         SqlHandler.url = configuration.getString("url")
+
+        // autosave
+        timer.schedule(timerTask {
+          saveQuests()
+        }, 0, TimeUnit.HOURS.toMillis(1))
 
         println("OSMQuests: Loaded ${quests.size} quests.")
     }
