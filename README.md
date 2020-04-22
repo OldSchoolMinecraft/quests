@@ -2,7 +2,17 @@
 
 When mostly complete, below is what will be available through this plugin.
 
-## Areas
+# How to use yourself
+This plugin will require small changes to be able to properly be used on a non-OSM server. 
+## What to Change
+- The `dev.shog.quest.handle.Donor` object must have a different way to detect Supporters.
+- Player saving requires an SQL server. You can either create get an SQL server, or rewrite to save the data locally. (To see what to create, look around the `dev.shog.quest.handle.ranks.user.User` class, or ask in the OSM Discord.)
+
+## Required Plugins
+- PermissionsEX
+- Essentials (What OSM uses for Economy, you could change this)
+
+# Areas
 
 ### Quests
 
