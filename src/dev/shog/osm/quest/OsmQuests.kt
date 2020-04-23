@@ -1,5 +1,6 @@
 package dev.shog.osm.quest
 
+import dev.shog.osm.quest.handle.DiscordWebhook
 import dev.shog.osm.quest.handle.SqlHandler
 import dev.shog.osm.quest.handle.commands.*
 import dev.shog.osm.quest.handle.parser.QuestParser
@@ -20,18 +21,33 @@ import java.util.concurrent.TimeUnit
 import kotlin.concurrent.timerTask
 
 class OsmQuests : JavaPlugin() {
+    companion object {
+        const val VERSION_STR = "1.0.0-B"
+    }
+
     lateinit var quests: LinkedList<Quest>
-    val timer = Timer()
+    lateinit var webhook: DiscordWebhook
+
+    var lastQuestSave = System.currentTimeMillis()
+    private val timer = Timer()
 
     override fun onEnable() {
+        if (arrayOf("username", "password", "url", "webhook").any { !configuration.all.containsKey(it) }) {
+            println("You are missing configuraiton options for OSM quests!")
+            server.pluginManager.disablePlugin(this)
+            return
+        }
+
         getCommand("xp").executor = VIEW_XP
         getCommand("quests").executor = VIEW_QUESTS.invoke(this)
         getCommand("rankup").executor = RANK_UP
         getCommand("rank").executor = RANK
-        getCommand("osmq_debug").executor = DEBUG_COMMAND
+        getCommand("osmq_debug").executor = DEBUG_COMMAND.invoke(this)
 
         quests = QuestParser.getAllQuests(this)
         saveQuests()
+
+        webhook = DiscordWebhook(configuration.getString("webhook"))
 
         SqlHandler.username = configuration.getString("username")
         SqlHandler.password = configuration.getString("password")
@@ -52,12 +68,17 @@ class OsmQuests : JavaPlugin() {
         println("OSMQuests: Exiting...")
     }
 
+    /**
+     * Save quests to file.
+     */
     fun saveQuests() {
         println("OSMQuests: Saving quests...")
 
         quests
             .forEach { quest -> QuestParser.saveQuest(quest) }
 
+        lastQuestSave = System.currentTimeMillis()
+        webhook.sendMessage("Quests have been saved.")
         println("OSMQuests: Completed quest saving!")
     }
 }

@@ -4,6 +4,9 @@ import com.mysql.cj.jdbc.MysqlDataSource
 import java.lang.Exception
 import java.sql.Connection
 
+/**
+ * Handles SQL interaction
+ */
 object SqlHandler {
     var url: String = ""
     var username: String = ""

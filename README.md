@@ -11,6 +11,7 @@ This plugin will require small changes to be able to properly be used on a non-O
 ## Required Plugins
 - PermissionsEX
 - Essentials (What OSM uses for Economy, you could change this)
+- OSMUtil
 
 # Areas
 

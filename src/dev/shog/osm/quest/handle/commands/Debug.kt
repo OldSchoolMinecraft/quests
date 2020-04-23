@@ -1,21 +1,23 @@
 package dev.shog.osm.quest.handle.commands
 
-import dev.shog.osm.quest.handle.MessageHandler
-import dev.shog.osm.quest.handle.ranks.user.User
-import dev.shog.osm.util.api.OsmApi
+import dev.shog.osm.quest.OsmQuests
+import dev.shog.osm.quest.handle.Donor
+import dev.shog.osm.util.defaultFormat
 import org.bukkit.command.CommandExecutor
 import org.bukkit.entity.Player
 
 /**
  * Debug
  */
-val DEBUG_COMMAND = CommandExecutor { sender, cmd, label, args ->
-    if (sender !is Player)
-        return@CommandExecutor true
+val DEBUG_COMMAND = { osmQuests: OsmQuests ->
+    CommandExecutor { sender, cmd, label, args ->
+        if (sender !is Player)
+            return@CommandExecutor true
 
-    val isDonor = OsmApi.isDonor(sender.name).join().toString()
+        val isDonor = Donor.check(sender)
 
-    sender.sendMessage(isDonor)
+        sender.sendMessage("S: ${isDonor}, LS: ${osmQuests.lastQuestSave.defaultFormat()}")
 
-    true
+        true
+    }
 }
