@@ -6,6 +6,7 @@ import dev.shog.osm.quest.handle.MessageHandler
 import dev.shog.osm.quest.handle.quests.Quest
 import dev.shog.osm.quest.handle.quests.task.QuestTask
 import org.bukkit.entity.Player
+import org.bukkit.entity.Projectile
 import org.bukkit.event.Event
 import org.bukkit.event.entity.EntityDamageByEntityEvent
 import org.bukkit.event.entity.EntityDeathEvent
@@ -42,10 +43,18 @@ class EntityKillTask(
                 if (event != null && event.entity::class.java == entity.entityClass) {
                     val ldc = event.entity.lastDamageCause
 
-                    if (ldc is EntityDamageByEntityEvent && ldc.damager is Player) {
-                        val player = ldc.damager as Player
+                    if (ldc is EntityDamageByEntityEvent) {
+                        val player = when {
+                            ldc.damager is Projectile && (ldc.damager as Projectile).shooter is Player ->
+                                (ldc.damager as Projectile).shooter as Player
 
-                        if (userOk(player) && !isComplete(player)) {
+                            ldc.damager is Player ->
+                                ldc.damager as Player
+
+                            else -> null
+                        }
+
+                        if (player != null && userOk(player) && !isComplete(player)) {
                             val current = status[player.name.toLowerCase()] ?: 0
 
                             status[player.name.toLowerCase()] = current + 1
