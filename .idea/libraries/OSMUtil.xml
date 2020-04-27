@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="OSMUtil">
-    <CLASSES>
-      <root url="jar://$PROJECT_DIR$/../../jvm/OSMUtil/out/artifacts/OSMUtil_jar/OSMUtil.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>
